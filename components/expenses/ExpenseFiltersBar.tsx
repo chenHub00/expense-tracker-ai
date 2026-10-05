@@ -14,9 +14,9 @@ interface ExpenseFiltersBarProps {
 const controlClass =
   'block w-full rounded-lg border-0 bg-white py-2 text-sm text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600';
 
-type Preset = { label: string; range: () => { from: string; to: string } };
+export type DatePreset = { label: string; range: () => { from: string; to: string } };
 
-const PRESETS: Preset[] = [
+export const DATE_PRESETS: DatePreset[] = [
   {
     label: 'This month',
     range: () => {
@@ -52,7 +52,7 @@ const PRESETS: Preset[] = [
 
 export function ExpenseFiltersBar({ filters, onChange }: ExpenseFiltersBarProps) {
   const set = <K extends keyof ExpenseFilters>(key: K, value: ExpenseFilters[K]) => onChange({ ...filters, [key]: value });
-  const activePreset = PRESETS.find((p) => {
+  const activePreset = DATE_PRESETS.find((p) => {
     const r = p.range();
     return r.from === filters.from && r.to === filters.to;
   });
@@ -146,7 +146,7 @@ export function ExpenseFiltersBar({ filters, onChange }: ExpenseFiltersBarProps)
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          {PRESETS.map((preset) => (
+          {DATE_PRESETS.map((preset) => (
             <button
               key={preset.label}
               type="button"

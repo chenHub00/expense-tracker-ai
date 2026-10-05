@@ -1,12 +1,13 @@
 'use client';
 
-import { Plus, Sparkles, Wallet } from 'lucide-react';
-import { useMemo } from 'react';
+import { Download, Plus, Sparkles, Wallet } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown';
 import { MonthlyChart } from '@/components/dashboard/MonthlyChart';
 import { RecentExpenses } from '@/components/dashboard/RecentExpenses';
 import { SummaryCards, SummaryCardsSkeleton } from '@/components/dashboard/SummaryCards';
+import { ExportDialog } from '@/components/export/ExportDialog';
 import { useExpenseDialogs } from '@/components/providers/ExpenseDialogProvider';
 import { useExpenses } from '@/components/providers/ExpenseProvider';
 import { useToast } from '@/components/providers/ToastProvider';
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const { expenses, isLoading, loadSampleData } = useExpenses();
   const { openCreate } = useExpenseDialogs();
   const toast = useToast();
+  const [exportOpen, setExportOpen] = useState(false);
 
   const summary = useMemo(() => getSummary(expenses), [expenses]);
   const monthly = useMemo(() => getMonthlyTotals(expenses, 6), [expenses]);
@@ -47,12 +49,19 @@ export default function DashboardPage() {
         title="Dashboard"
         description={monthName ? `Overview of your spending · ${monthName}` : 'Overview of your spending'}
         actions={
-          <Button onClick={openCreate}>
-            <Plus className="h-4 w-4" aria-hidden />
-            Add expense
-          </Button>
+          <>
+            <Button variant="secondary" onClick={() => setExportOpen(true)} disabled={isLoading || expenses.length === 0}>
+              <Download className="h-4 w-4" aria-hidden />
+              Export
+            </Button>
+            <Button onClick={openCreate}>
+              <Plus className="h-4 w-4" aria-hidden />
+              Add expense
+            </Button>
+          </>
         }
       />
+      <ExportDialog open={exportOpen} onClose={() => setExportOpen(false)} />
 
       {isLoading ? (
         <>
