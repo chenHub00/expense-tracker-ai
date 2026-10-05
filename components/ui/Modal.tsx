@@ -10,7 +10,7 @@ interface ModalProps {
   title: string;
   description?: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export function Modal({ open, onClose, title, description, children, size = 'md' }: ModalProps) {
@@ -85,7 +85,7 @@ export function Modal({ open, onClose, title, description, children, size = 'md'
         tabIndex={-1}
         className={cn(
           'relative max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white shadow-xl outline-none animate-scale-in sm:rounded-2xl',
-          size === 'sm' ? 'sm:max-w-md' : 'sm:max-w-lg',
+          size === 'sm' ? 'sm:max-w-md' : size === 'lg' ? 'sm:max-w-2xl' : 'sm:max-w-lg',
         )}
       >
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">

@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, List, Plus, Wallet } from 'lucide-react';
+import { CloudUpload, LayoutDashboard, List, Plus, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useExpenseDialogs } from '@/components/providers/ExpenseDialogProvider';
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/expenses', label: 'Expenses', icon: List },
+  { href: '/exports', label: 'Exports', icon: CloudUpload },
 ];
 
 export function Navbar() {
@@ -41,8 +42,9 @@ export function Navbar() {
                     active ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
                   )}
                 >
-                  <Icon className="hidden h-4 w-4 sm:block" aria-hidden />
-                  {label}
+                  <Icon className="h-4 w-4" aria-hidden />
+                  {/* Icons only on phones: three labels plus the add button don't fit at 375px. */}
+                  <span className="sr-only sm:not-sr-only">{label}</span>
                 </Link>
               );
             })}
