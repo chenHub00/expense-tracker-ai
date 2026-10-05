@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+build
+.git
+.claude
+.env*.local
+npm-debug.log*
+.DS_Store
+bigPrompt.txt
+Dockerfile
+.dockerignore

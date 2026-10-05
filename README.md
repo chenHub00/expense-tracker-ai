@@ -34,6 +34,15 @@ npm start
 
 Other scripts: `npm run lint` and `npm run typecheck`.
 
+### Run with Docker
+
+```bash
+docker build -t expense-tracker .
+docker run -p 3000:3000 expense-tracker
+```
+
+Then open http://localhost:3000.
+
 ## Project structure
 
 ```
