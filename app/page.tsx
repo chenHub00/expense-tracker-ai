@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Sparkles, Wallet } from 'lucide-react';
+import { Download, Plus, Sparkles, Wallet } from 'lucide-react';
 import { useMemo } from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown';
@@ -14,8 +14,9 @@ import { Button } from '@/components/ui/Button';
 import { Card, Skeleton } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { getMonthlyTotals, getSummary } from '@/lib/analytics';
+import { downloadFile, expensesToCSV } from '@/lib/csv';
 import { sortByDateDesc } from '@/lib/filters';
-import { LOCALE } from '@/lib/utils';
+import { LOCALE, todayISO } from '@/lib/utils';
 
 export default function DashboardPage() {
   const { expenses, isLoading, loadSampleData } = useExpenses();
@@ -41,16 +42,26 @@ export default function DashboardPage() {
     }
   };
 
+  const handleExport = () => {
+    downloadFile(`expenses-${todayISO()}.csv`, expensesToCSV(sortByDateDesc(expenses)));
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
         description={monthName ? `Overview of your spending · ${monthName}` : 'Overview of your spending'}
         actions={
-          <Button onClick={openCreate}>
-            <Plus className="h-4 w-4" aria-hidden />
-            Add expense
-          </Button>
+          <>
+            <Button variant="secondary" onClick={handleExport} disabled={isLoading || expenses.length === 0}>
+              <Download className="h-4 w-4" aria-hidden />
+              Export Data
+            </Button>
+            <Button onClick={openCreate}>
+              <Plus className="h-4 w-4" aria-hidden />
+              Add expense
+            </Button>
+          </>
         }
       />
 
