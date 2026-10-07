@@ -1,8 +1,9 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { CATEGORIES } from '../types';
-import { formatCurrency, formatDate } from '../utils';
-import type { ExportContext } from './formats';
+import { formatCurrency, formatDate } from '../../utils';
+import { includesAllCategories } from '../selection';
+import type { ExportDocument } from '../types';
+import { PDF_MIME_TYPE } from './pdf';
 
 const INDIGO: [number, number, number] = [79, 70, 229];
 const SLATE_500: [number, number, number] = [100, 116, 139];
@@ -13,15 +14,15 @@ function right(content: string) {
   return { content, styles: { halign: 'right' as const } };
 }
 
-function describePeriod({ options, summary }: ExportContext): string {
-  const from = options.from || summary.firstDate;
-  const to = options.to || summary.lastDate;
+function describePeriod({ selection, summary }: ExportDocument): string {
+  const from = selection.from || summary.firstDate;
+  const to = selection.to || summary.lastDate;
   if (!from || !to) return 'All time';
   return `${formatDate(from)} – ${formatDate(to)}`;
 }
 
-export async function renderPdf(context: ExportContext): Promise<Blob> {
-  const { rows, summary, options, generatedAt } = context;
+export async function renderPdf(document: ExportDocument): Promise<Blob> {
+  const { rows, summary, selection, generatedAt } = document;
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 40;
@@ -30,9 +31,8 @@ export async function renderPdf(context: ExportContext): Promise<Blob> {
   doc.text('Expense Report', margin, 56);
 
   doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(...SLATE_500);
-  const categories =
-    options.categories.length === CATEGORIES.length ? 'All categories' : options.categories.join(', ');
-  doc.text(`Period: ${describePeriod(context)}`, margin, 76);
+  const categories = includesAllCategories(selection) ? 'All categories' : selection.categories.join(', ');
+  doc.text(`Period: ${describePeriod(document)}`, margin, 76);
   doc.text(`Categories: ${categories}`, margin, 90, { maxWidth: pageWidth - margin * 2 });
   doc.text(`Generated ${generatedAt.toLocaleString('en-US')}`, margin, 104);
 
@@ -68,5 +68,6 @@ export async function renderPdf(context: ExportContext): Promise<Blob> {
     },
   });
 
-  return doc.output('blob');
+  // jsPDF's blob is already application/pdf; re-wrap so the type is guaranteed by our contract.
+  return new Blob([doc.output('arraybuffer')], { type: PDF_MIME_TYPE });
 }

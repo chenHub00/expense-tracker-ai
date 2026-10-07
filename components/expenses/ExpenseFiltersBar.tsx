@@ -2,9 +2,10 @@
 
 import { Search, X } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { DATE_PRESETS } from '@/lib/datePresets';
 import { DEFAULT_FILTERS, SORT_LABELS, hasActiveFilters, type ExpenseFilters, type SortOption } from '@/lib/filters';
 import { CATEGORIES, type Category } from '@/lib/types';
-import { cn, toISODate } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface ExpenseFiltersBarProps {
   filters: ExpenseFilters;
@@ -13,42 +14,6 @@ interface ExpenseFiltersBarProps {
 
 const controlClass =
   'block w-full rounded-lg border-0 bg-white py-2 text-sm text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600';
-
-export type DatePreset = { label: string; range: () => { from: string; to: string } };
-
-export const DATE_PRESETS: DatePreset[] = [
-  {
-    label: 'This month',
-    range: () => {
-      const now = new Date();
-      return { from: toISODate(new Date(now.getFullYear(), now.getMonth(), 1)), to: toISODate(now) };
-    },
-  },
-  {
-    label: 'Last month',
-    range: () => {
-      const now = new Date();
-      return {
-        from: toISODate(new Date(now.getFullYear(), now.getMonth() - 1, 1)),
-        to: toISODate(new Date(now.getFullYear(), now.getMonth(), 0)),
-      };
-    },
-  },
-  {
-    label: 'Last 30 days',
-    range: () => {
-      const now = new Date();
-      return { from: toISODate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29)), to: toISODate(now) };
-    },
-  },
-  {
-    label: 'This year',
-    range: () => {
-      const now = new Date();
-      return { from: toISODate(new Date(now.getFullYear(), 0, 1)), to: toISODate(now) };
-    },
-  },
-];
 
 export function ExpenseFiltersBar({ filters, onChange }: ExpenseFiltersBarProps) {
   const set = <K extends keyof ExpenseFilters>(key: K, value: ExpenseFilters[K]) => onChange({ ...filters, [key]: value });

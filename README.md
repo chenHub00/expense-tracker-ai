@@ -32,7 +32,7 @@ npm run build
 npm start
 ```
 
-Other scripts: `npm run lint` and `npm run typecheck`.
+Other scripts: `npm run lint`, `npm run typecheck` and `npm test` (unit tests with Vitest).
 
 ## Project structure
 
@@ -47,6 +47,7 @@ components/
   expenses/             Expense form, filter bar, list/table
   ui/                   Button, Card, Modal, badges, empty state
 lib/
+  export/               Export module (see lib/export/README.md)
   types.ts              Expense model and categories
   storage.ts            localStorage persistence with validation
   validation.ts         Form validation rules
